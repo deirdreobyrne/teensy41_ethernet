@@ -108,12 +108,22 @@ ethernet_input(struct pbuf *p, struct netif *netif)
 #if ETHARP_SUPPORT_VLAN
   if (type == PP_HTONS(ETHTYPE_VLAN)) {
     struct eth_vlan_hdr *vlan = (struct eth_vlan_hdr*)(((char*)ethhdr) + SIZEOF_ETH_HDR);
+    u16_t vlan_id = VLAN_ID(vlan);
     if (p->len <= SIZEOF_ETH_HDR + SIZEOF_VLAN_HDR) {
       /* a packet with only an ethernet/vlan header (or less) is not valid for us */
       ETHARP_STATS_INC(etharp.proterr);
       ETHARP_STATS_INC(etharp.drop);
       MIB2_STATS_NETIF_INC(netif, ifinerrors);
       goto free_and_return;
+    }
+    if (vlan_id) {
+      struct netif * tmp_netif = netif_list;
+      while (tmp_netif) {
+        if (vlan_id == tmp_netif->vlan_id) {
+          netif = tmp_netif;
+          tmp_netif = 0;
+        } else tmp_netif = tmp_netif->next;
+      }
     }
 #if defined(LWIP_HOOK_VLAN_CHECK) || defined(ETHARP_VLAN_CHECK) || defined(ETHARP_VLAN_CHECK_FN) /* if not, allow all VLANs */
 #ifdef LWIP_HOOK_VLAN_CHECK
@@ -268,8 +278,13 @@ ethernet_output(struct netif* netif, struct pbuf* p,
   struct eth_hdr* ethhdr;
   u16_t eth_type_be = lwip_htons(eth_type);
 
-#if ETHARP_SUPPORT_VLAN && defined(LWIP_HOOK_VLAN_SET)
-  s32_t vlan_prio_vid = LWIP_HOOK_VLAN_SET(netif, p, src, dst, eth_type);
+#if ETHARP_SUPPORT_VLAN
+  s32_t vlan_prio_vid;
+#if defined(LWIP_HOOK_VLAN_SET)
+  vlan_prio_vid = LWIP_HOOK_VLAN_SET(netif, p, src, dst, eth_type);
+#else
+  vlan_prio_vid = netif->vlan_id;
+#endif
   if (vlan_prio_vid >= 0) {
     struct eth_vlan_hdr* vlanhdr;
 

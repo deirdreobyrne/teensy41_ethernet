@@ -38,6 +38,20 @@
 #ifndef LWIP_LWIPOPTS_H
 #define LWIP_LWIPOPTS_H
 
+#define PROJECT echosrv
+
+#ifdef PROJECT
+
+#define __PROJECT_INCLUDE(f) #f
+#define _PROJECT_INCLUDE(f) __PROJECT_INCLUDE(projects/f/lwipopts.h)
+#define PROJECT_INCLUDE(f) _PROJECT_INCLUDE(f)
+
+#include PROJECT_INCLUDE(PROJECT)
+
+#else
+
+#define ETHARP_SUPPORT_VLAN 1
+
 // thd stuff
 //  default was 2 *
 #define TCP_SND_BUF                 (4 * TCP_MSS)
@@ -547,4 +561,7 @@
 #define SNTP_SET_SYSTEM_TIME_US(sec, us)	do { const struct timeval tv = {(time_t)(sec),(suseconds_t)(us)}; settimeofday(&tv, NULL); } while(0)
 
 #define SNTP_GET_SYSTEM_TIME(sec, us)		do { struct timeval tv; gettimeofday(&tv, NULL); (sec) = tv.tv_sec; (us) = tv.tv_usec; } while(0)
+
+#endif
+
 #endif /* LWIP_LWIPOPTS_H */

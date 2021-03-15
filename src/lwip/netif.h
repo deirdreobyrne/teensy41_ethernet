@@ -338,6 +338,9 @@ struct netif {
   u16_t loop_cnt_current;
 #endif /* LWIP_LOOPBACK_MAX_PBUFS */
 #endif /* ENABLE_LOOPBACK */
+#if ETHARP_SUPPORT_VLAN
+  u16_t vlan_id;
+#endif
 };
 
 #if LWIP_CHECKSUM_CTRL_PER_NETIF
@@ -360,6 +363,9 @@ struct netif *netif_add(struct netif *netif,
 #if LWIP_IPV4
                         const ip4_addr_t *ipaddr, const ip4_addr_t *netmask, const ip4_addr_t *gw,
 #endif /* LWIP_IPV4 */
+#if ETHARP_SUPPORT_VLAN
+                        const u16_t vlan_id,
+#endif
                         void *state, netif_init_fn init, netif_input_fn input);
 #if LWIP_IPV4
 void netif_set_addr(struct netif *netif, const ip4_addr_t *ipaddr, const ip4_addr_t *netmask,
@@ -374,6 +380,10 @@ void netif_remove(struct netif * netif);
 struct netif *netif_find(const char *name);
 
 void netif_set_default(struct netif *netif);
+
+#if ETHARP_SUPPORT_VLAN
+void netif_set_vlan_id(struct netif *netif, const u16_t vlan_id);
+#endif
 
 #if LWIP_IPV4
 void netif_set_ipaddr(struct netif *netif, const ip4_addr_t *ipaddr);

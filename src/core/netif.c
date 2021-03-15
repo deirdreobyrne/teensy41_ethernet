@@ -242,6 +242,9 @@ netif_add(struct netif *netif,
 #if LWIP_IPV4
           const ip4_addr_t *ipaddr, const ip4_addr_t *netmask, const ip4_addr_t *gw,
 #endif /* LWIP_IPV4 */
+#if ETHARP_SUPPORT_VLAN
+          const u16_t vlan_id,
+#endif
           void *state, netif_init_fn init, netif_input_fn input)
 {
 #if LWIP_IPV6
@@ -256,6 +259,9 @@ netif_add(struct netif *netif,
   ip_addr_set_zero_ip4(&netif->netmask);
   ip_addr_set_zero_ip4(&netif->gw);
 #endif /* LWIP_IPV4 */
+#if ETHARP_SUPPORT_VLAN
+  netif->vlan_id = vlan_id;
+#endif
 #if LWIP_IPV6
   for (i = 0; i < LWIP_IPV6_NUM_ADDRESSES; i++) {
     ip_addr_set_zero_ip6(&netif->ip6_addr[i]);
@@ -491,6 +497,12 @@ netif_find(const char *name)
   LWIP_DEBUGF(NETIF_DEBUG, ("netif_find: didn't find %c%c\n", name[0], name[1]));
   return NULL;
 }
+
+#if ETHARP_SUPPORT_VLAN
+void netif_set_vlan_id(struct netif *netif, const u16_t vlan_id) {
+  netif->vlan_id = vlan_id;
+}
+#endif
 
 #if LWIP_IPV4
 /**
