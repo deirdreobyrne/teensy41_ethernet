@@ -238,7 +238,12 @@ netif_input(struct pbuf *p, struct netif *inp)
  * @return netif, or NULL if failed.
  */
 struct netif *
-netif_add(struct netif *netif,
+#if ETHARP_SUPPORT_VLAN
+netif_add_vlan(
+#else
+netif_add(
+#endif
+          struct netif *netif,
 #if LWIP_IPV4
           const ip4_addr_t *ipaddr, const ip4_addr_t *netmask, const ip4_addr_t *gw,
 #endif /* LWIP_IPV4 */
@@ -342,6 +347,23 @@ netif_add(struct netif *netif,
   LWIP_DEBUGF(NETIF_DEBUG, ("\n"));
   return netif;
 }
+
+#if ETHARP_SUPPORT_VLAN
+struct netif *
+netif_add(
+          struct netif *netif,
+#if LWIP_IPV4
+          const ip4_addr_t *ipaddr, const ip4_addr_t *netmask, const ip4_addr_t *gw,
+#endif /* LWIP_IPV4 */
+          void *state, netif_init_fn init, netif_input_fn input)
+{
+  netif_add_vlan(netif,
+#if LWIP_IPV4
+    ipaddr, netmask, gw,
+#endif /* LWIP_IPV4 */
+    0, state, init, input);
+}
+#endif
 
 #if LWIP_IPV4
 /**

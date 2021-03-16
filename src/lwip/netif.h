@@ -359,13 +359,19 @@ extern struct netif *netif_default;
 
 void netif_init(void);
 
+#if ETHARP_SUPPORT_VLAN
+struct netif *netif_add_vlan(struct netif *netif,
+#if LWIP_IPV4
+                        const ip4_addr_t *ipaddr, const ip4_addr_t *netmask, const ip4_addr_t *gw,
+#endif /* LWIP_IPV4 */
+                        const u16_t vlan_id,
+                        void *state, netif_init_fn init, netif_input_fn input);
+#endif
+
 struct netif *netif_add(struct netif *netif,
 #if LWIP_IPV4
                         const ip4_addr_t *ipaddr, const ip4_addr_t *netmask, const ip4_addr_t *gw,
 #endif /* LWIP_IPV4 */
-#if ETHARP_SUPPORT_VLAN
-                        const u16_t vlan_id,
-#endif
                         void *state, netif_init_fn init, netif_input_fn input);
 #if LWIP_IPV4
 void netif_set_addr(struct netif *netif, const ip4_addr_t *ipaddr, const ip4_addr_t *netmask,
