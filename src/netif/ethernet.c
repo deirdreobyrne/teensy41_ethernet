@@ -119,6 +119,7 @@ ethernet_input(struct pbuf *p, struct netif *netif)
     if (vlan_id) {
       struct netif * tmp_netif = netif_list;
       while (tmp_netif) {
+  LWIP_DEBUGF( NETIF_DEBUG, ("  -- checking %"X16_F" against %c%c %"X16_F"\n", vlan_id, tmp_netif->name[0], tmp_netif->name[1], tmp_netif->tci) );
         if (vlan_id == (tmp_netif->tci & 0xFFF)) {
           netif = tmp_netif;
           tmp_netif = 0;
@@ -139,6 +140,9 @@ ethernet_input(struct pbuf *p, struct netif *netif)
     }
 #endif /* defined(LWIP_HOOK_VLAN_CHECK) || defined(ETHARP_VLAN_CHECK) || defined(ETHARP_VLAN_CHECK_FN) */
     type = vlan->tpid;
+    LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE,
+    ("  -- vlan:%"X16_F", type:%"X16_F", netif:%c%c\n", vlan_id, lwip_htons(type), netif->name[0], netif->name[1]
+    ));
     ip_hdr_offset = SIZEOF_ETH_HDR + SIZEOF_VLAN_HDR;
   }
 #endif /* ETHARP_SUPPORT_VLAN */
