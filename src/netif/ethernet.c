@@ -283,7 +283,7 @@ ethernet_output(struct netif* netif, struct pbuf* p,
 #if defined(LWIP_HOOK_VLAN_SET)
   vlan_prio_vid = LWIP_HOOK_VLAN_SET(netif, p, src, dst, eth_type);
 #else
-  vlan_prio_vid = netif->vlan_id;
+  vlan_prio_vid = netif->tci;
 #endif
   if (vlan_prio_vid >= 0) {
     struct eth_vlan_hdr* vlanhdr;

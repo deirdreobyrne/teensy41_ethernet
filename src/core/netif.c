@@ -265,7 +265,7 @@ netif_add(
   ip_addr_set_zero_ip4(&netif->gw);
 #endif /* LWIP_IPV4 */
 #if ETHARP_SUPPORT_VLAN
-  netif->vlan_id = vlan_id;
+  netif->tci = (netif->tci & 0xf000) |  vlan_id;
 #endif
 #if LWIP_IPV6
   for (i = 0; i < LWIP_IPV6_NUM_ADDRESSES; i++) {
@@ -522,7 +522,7 @@ netif_find(const char *name)
 
 #if ETHARP_SUPPORT_VLAN
 void netif_set_vlan_id(struct netif *netif, const u16_t vlan_id) {
-  netif->vlan_id = vlan_id;
+  netif->tci = (netif->tci & 0xf000) |  vlan_id;
 }
 #endif
 

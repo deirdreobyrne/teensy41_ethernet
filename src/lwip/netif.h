@@ -339,7 +339,7 @@ struct netif {
 #endif /* LWIP_LOOPBACK_MAX_PBUFS */
 #endif /* ENABLE_LOOPBACK */
 #if ETHARP_SUPPORT_VLAN
-  u16_t vlan_id;
+  u16_t tci;
 #endif
 };
 
