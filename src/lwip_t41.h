@@ -24,9 +24,12 @@ void enet_proc_input(void);
 void enet_poll();
 void enet_txTimestampNextPacket();
 uint32_t read_1588_timer();
+void t41_extra_netif_init(struct netif *netif, char name0, char name1);
 
+#ifdef LWIP_DEBUG
 typedef void (*debug_print_string_fn)(const char *msg);
 void set_debug_print(debug_print_string_fn func);
+#endif
 
 #ifdef __cplusplus
 }
