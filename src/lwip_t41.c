@@ -1,5 +1,7 @@
 #if defined(ARDUINO_TEENSY41)
 
+#include <stdarg.h>
+
 #include <string.h>
 
 #include "lwip_t41.h"
@@ -137,19 +139,40 @@ static volatile uint32_t rx_ready;
 void enet_isr();
 
 #ifdef LWIP_DEBUG
+
+static debug_print_string_fn debug_print_string;
+
+void set_debug_print(debug_print_string_fn func) {
+    debug_print_string = func;
+}
+
 // arch\cc.h 
 void assert_printf(char *msg, int line, char *file)
 {
-    //_printf("assert msg=%s line=%d file=%s\n", msg, line, file);
+    _printf("assert msg=%s line=%d file=%s\n", msg, line, file);
 }
 
 // include\lwip\err.h 
-const char *lwip_strerr(err_t err)
-{
-    static char buf[32];
-    snprintf(buf, sizeof(buf) - 1, "err 0x%X", err);
-    return buf;
+//const char *lwip_strerr(err_t err)
+//{
+//    static char buf[32];
+//    snprintf(buf, sizeof(buf) - 1, "err 0x%X", err);
+//    return buf;
+//}
+
+// https://stackoverflow.com/questions/1056411/how-to-pass-variable-number-of-arguments-to-printf-sprintf
+void _printf(const char* format, ...) {
+    char msg[128];
+    va_list argptr;
+
+    if (debug_print_string) {
+        va_start(argptr, format);
+        vsnprintf(msg, 128, format, argptr);
+        va_end(argptr);
+        (*debug_print_string)(msg);
+    }
 }
+
 #endif
 
 // PHY_MDIO ==========================

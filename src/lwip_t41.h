@@ -5,6 +5,7 @@
 
 #include "lwip/ip_addr.h"
 #include "lwip/pbuf.h"
+#include "lwipopts.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -24,8 +25,15 @@ void enet_poll();
 void enet_txTimestampNextPacket();
 uint32_t read_1588_timer();
 
+typedef void (*debug_print_string_fn)(const char *msg);
+void set_debug_print(debug_print_string_fn func);
+
 #ifdef __cplusplus
 }
+#endif
+
+#ifdef LWIP_DEBUG
+void _printf(const char* format, ...);
 #endif
 
 #endif

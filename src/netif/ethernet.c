@@ -119,7 +119,7 @@ ethernet_input(struct pbuf *p, struct netif *netif)
     if (vlan_id) {
       struct netif * tmp_netif = netif_list;
       while (tmp_netif) {
-        if (vlan_id == tmp_netif->vlan_id) {
+        if (vlan_id == (tmp_netif->tci & 0xFFF)) {
           netif = tmp_netif;
           tmp_netif = 0;
         } else tmp_netif = tmp_netif->next;

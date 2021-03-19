@@ -362,6 +362,7 @@ netif_add(
     ipaddr, netmask, gw,
 #endif /* LWIP_IPV4 */
     0, state, init, input);
+    return netif;
 }
 #endif
 
