@@ -430,7 +430,7 @@ err_t t41_low_level_output(struct netif *netif, struct pbuf *p)
     return ERR_OK;
 }
 
-void t41_extra_netif_init(struct netif *netif, char name0, char name1) {
+err_t t41_extra_netif_init(struct netif *netif) {
     netif->linkoutput = t41_low_level_output;
     netif->output = etharp_output;
     netif->mtu = 1522;
@@ -440,14 +440,16 @@ void t41_extra_netif_init(struct netif *netif, char name0, char name1) {
 #if LWIP_NETIF_HOSTNAME
     netif->hostname = "lwip";
 #endif
-    netif->name[0] = name0;
-    netif->name[1] = name1;
+    netif->name[0] = 'n';
+    netif->name[1] = '0'+netif->num;
+    return ERR_OK;
 }
 
 static err_t t41_netif_init(struct netif *netif)
 {
-    t41_extra_netif_init(netif,'e','0');
-
+    t41_extra_netif_init(netif);
+    netif->name[0] = 'e';
+    netif->name[1] = '0';
     t41_low_level_init();
 
     return ERR_OK;
