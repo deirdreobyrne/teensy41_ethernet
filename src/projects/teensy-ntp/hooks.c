@@ -11,7 +11,7 @@
 #include "lwip/tcp.h"
 #include "lwip/prot/ethernet.h"
 
-#define UDP_PORT 123
+#define UDP_PORT 7
 
 s32_t teensy_ntp_set_vlan(struct netif* netif, struct pbuf* p, const struct eth_addr* src, const struct eth_addr* dst, u16_t eth_type) {
   if (eth_type == ETHTYPE_IP) {
@@ -20,7 +20,8 @@ s32_t teensy_ntp_set_vlan(struct netif* netif, struct pbuf* p, const struct eth_
       int udp_offset = (ip->_v_hl & 0x0f) << 2;
       struct udp_hdr *udp = (struct udp_hdr *)((uint8_t*)(p->payload) + udp_offset);
       if ((udp->src == PP_HTONS(UDP_PORT)) || (udp->dest == PP_HTONS(UDP_PORT))) {
-        return netif->tci | 0xe000;
+//        ip->_tos = 0x38; // TODO Figure out why this doesn't break the IP header checksum! NB tos is set in the protocol buffer?
+        return netif->tci;
       }
     }
   }

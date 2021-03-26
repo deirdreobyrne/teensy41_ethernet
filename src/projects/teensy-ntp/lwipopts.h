@@ -40,7 +40,7 @@
 
 #define ETHARP_SUPPORT_VLAN 1
 
-#define LWIP_HOOK_FILENAME "projects/teensy-ntp/hooks.h"
+//#define LWIP_HOOK_FILENAME "projects/teensy-ntp/hooks.h"
 
 // thd stuff
 //  default was 2 *
