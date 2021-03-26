@@ -40,8 +40,6 @@
 
 #define ETHARP_SUPPORT_VLAN 1
 
-//#define LWIP_HOOK_FILENAME "projects/teensy-ntp/hooks.h"
-
 // thd stuff
 //  default was 2 *
 #define TCP_SND_BUF                 (4 * TCP_MSS)
