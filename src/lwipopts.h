@@ -38,7 +38,7 @@
 #ifndef LWIP_LWIPOPTS_H
 #define LWIP_LWIPOPTS_H
 
-#define PROJECT echosrv
+#define PROJECT teensy-ntp
 
 #ifdef PROJECT
 
