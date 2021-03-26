@@ -5,22 +5,21 @@
 #endif
 
 #ifdef _PROJECT_TEENSY_NTP_
+#include <string.h>
 #include "lwip_t41.h"
 #include "lwip/udp.h"
 #include "lwip/tcp.h"
 #include "lwip/prot/ethernet.h"
 
-//
-// DEMO TO SEE IF THIS WORKS!
-//
+#define UDP_PORT 123
+
 s32_t teensy_ntp_set_vlan(struct netif* netif, struct pbuf* p, const struct eth_addr* src, const struct eth_addr* dst, u16_t eth_type) {
   if (eth_type == ETHTYPE_IP) {
-    struct ip_hdr *ip = (struct ip_hdr *)((uint8_t *)(p->payload) + SIZEOF_ETH_HDR);
+    struct ip_hdr *ip = (struct ip_hdr *)(p->payload);
     if (ip->_proto == IP_PROTO_UDP) {
       int udp_offset = (ip->_v_hl & 0x0f) << 2;
-      struct udp_hdr *udp = (struct udp_hdr *)((uint8_t*)(p->payload) + SIZEOF_ETH_HDR + udp_offset);
-//      if ((lwip_ntohs(udp->src) == 123) || (lwip_ntohs(udp->dest) == 123)) {
-      if ((lwip_ntohs(udp->src) == 7) || (lwip_ntohs(udp->dest) == 7)) {
+      struct udp_hdr *udp = (struct udp_hdr *)((uint8_t*)(p->payload) + udp_offset);
+      if ((udp->src == PP_HTONS(UDP_PORT)) || (udp->dest == PP_HTONS(UDP_PORT))) {
         return netif->tci | 0xe000;
       }
     }
