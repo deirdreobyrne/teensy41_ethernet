@@ -21,7 +21,7 @@ s32_t teensy_ntp_set_vlan(struct netif* netif, struct pbuf* p, const struct eth_
       struct udp_hdr *udp = (struct udp_hdr *)((uint8_t*)(p->payload) + SIZEOF_ETH_HDR + udp_offset);
 //      if ((lwip_ntohs(udp->src) == 123) || (lwip_ntohs(udp->dest) == 123)) {
       if ((lwip_ntohs(udp->src) == 7) || (lwip_ntohs(udp->dest) == 7)) {
-        return netif->tci | 0xe0;
+        return netif->tci | 0xe000;
       }
     }
   }
